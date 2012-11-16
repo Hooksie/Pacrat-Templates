@@ -1,10 +1,36 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Untitled Document</title>
-</head>
+{% extends "universal.html" %}
 
-<body>
-</body>
-</html>
+{% block maincontent %}
+
+<script>
+ 
+var returnedData = null;
+
+function FindStudent() {
+	$.post('/ajax/ParcelLogger/findStudent.json/', 
+		{ 'boxId': $('#entry_boxId').val(),
+		  'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val() },
+		function(response) {
+			$('#entry_firstName').val(response.data.firstName);
+			$('#entry_lastName').val(response.data.lastName);
+		}
+	);
+}
+</script>
+
+<form action="/ajax/ParcelLogger/findStudent.json/" method="post" class="form-inline">
+{% csrf_token %}
+	<fieldset><legend>New package entry</legend>
+	<input class="input-small" type="text" placeholder="Box Number" name="boxId" id="entry_boxId" onChange="FindStudent();">
+    <input class="input-small" type="text" placeholder="First Name" name="firstName" id="entry_firstName">
+    <input class="input-small" type="text" placeholder="Last Name" name="lastName" id="entry_lastName">
+    
+    <label class="checkbox">
+    	<input type="checkbox">Flat
+    </label>
+    <button class="btn" type="submit">Submit</button>
+    </fieldset>
+</form>
+
+
+{% endblock %}
